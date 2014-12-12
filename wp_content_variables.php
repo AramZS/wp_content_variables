@@ -11,27 +11,32 @@ License: GPL2
 
 class WP_Content_Variables {
 
-  	protected $data;
+  protected $data;
 
-  	protected static $instances;
+  protected static $instance;
 
-  	public static function get_instance() {
+  public static function get_instance() {
   		$class = get_called_class();
-  		if ( ! isset( static::$instances[$class] ) ) {
+  		if ( ! isset( static::$instance ) ) {
   			$instance = new $class;
   			// Standard setup methods
-  			foreach( array( 'setup_globals', 'includes', 'setup_actions' ) as $method ) {
+  			foreach( array( 'setup_globals', 'includes', 'setup_actions', 'setup_classes' ) as $method ) {
   				if ( method_exists( $instance, $method ) )
   					$instance->$method();
   			}
-  			self::$instances[$class] = $instance;
+  			self::$instance = $instance;
   		}
-  		return self::$instances[$class];
-  	}
+  		return self::$instance;
+  }
+
+
 
 	private function __construct() {
   		/** Prevent the class from being loaded more than once **/
-  	}
+
+  }
+
+
 
   	public function __isset( $key ) {
   		return isset( $this->data[$key] );
@@ -64,10 +69,16 @@ class WP_Content_Variables {
 	 */
 	protected function includes() {
 		require_once('include/admin.php');
+
 	}
 
   public function setup_actions(){
     add_action( 'wp_enqueue_scripts', array( $this, 'scripts' ) );
+
+  }
+
+  public function setup_classes(){
+    $this->set_up_admin();
   }
 
 	/**
@@ -76,8 +87,19 @@ class WP_Content_Variables {
 	 * @return null
 	 */
 	public function scripts() {
-    	
 
+
+	}
+
+  	/**
+	 * Sets up the admin pannel.
+	 *
+	 * @since 3.0
+	 */
+	function set_up_admin() {
+		if ( empty( $this->admin ) ) {
+			$this->admin = new WPCV_Admin;
+		}
 	}
 
 

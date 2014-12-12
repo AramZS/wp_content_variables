@@ -7,7 +7,7 @@ class WPCV_Admin {
     function __construct(){
 
         $this->slug = WP_Content_Variables()->slug;
-		$this->url = WP_Content_Variables()->plugin_url;
+		$this->url = WP_Content_Variables::plugin_url;
 		$this->option_name = $this->slug.'_settings';
 		$this->option_title = __('Content Variables', 'wpcv');
         add_action( 'admin_menu', array( $this, 'register_custom_menu_pages' ) );
@@ -370,12 +370,12 @@ class WPCV_Admin {
 
     public function add_admin_scripts($hook){
         global $pagenow;
-		
+
         wp_register_script($this->slug . '-admin', $this->url . 'assets/js/admin.js' , array( 'jquery' ));
         if ('tools_page_'.$this->slug.'-menu' == $hook){
             wp_enqueue_script($this->slug.'-admin');
         }
-        
+
 
     }
 
