@@ -61,7 +61,7 @@ class WP_Content_Variables {
 		$this->plugin_dir = apply_filters( 'WP_Content_Variables_plugin_dir_path', plugin_dir_path( $this->file ) );
 		$this->plugin_url = apply_filters( 'WP_Content_Variables_plugin_dir_url',  plugin_dir_url( $this->file ) );
 		$this->ver = apply_filters( 'WP_Content_Variables_version',  '0.0.1' );
-		$this->slug = apply_filters( 'WP_Content_Variables_version',  '0.0.1' );
+		$this->slug = apply_filters( 'WP_Content_Variables_slug',  'wpcv' );
 
     if (!isset($res)){
       $extend = new stdClass();

@@ -5,11 +5,11 @@ class WPCV_Admin extends WP_Content_Variables {
     var $option_name;
 
     function __construct(){
-      $mothership = $this;
-        $this->slug = $mothership->slug;
-		$this->url = $mothership->plugin_url;
-		$this->option_name = $this->slug.'_settings';
-		$this->option_title = __('Content Variables', 'wpcv');
+      $mothership = WP_Content_Variables();
+      $this->slug = $mothership->slug;
+		  $this->url = $mothership->plugin_url;
+		  $this->option_name = $this->slug.'_settings';
+		  $this->option_title = __('Content Variables', 'wpcv');
         add_action( 'admin_menu', array( $this, 'register_custom_menu_pages' ) );
         add_action( 'admin_init', array($this, 'settings_page_init'));
         add_action( 'admin_enqueue_scripts', array( $this, 'add_admin_scripts' ) );
@@ -43,219 +43,27 @@ class WPCV_Admin extends WP_Content_Variables {
             $this->slug
         );
 
-        add_settings_field(
-            'agatt-goog-analytics-scroll',
-            __('Activate scroll tracking', 'wpcv'),
-            array($this, 'option_generator'),
-            $this->slug,
-            $this->slug.'-section',
-            array(
-
-              'parent_element'   =>  'scrolldepth',
-              'element'          =>  'scroll_tracking_check',
-              'type'             =>  'checkbox',
-              'label_for'        =>  'Turn on scroll tracking. <a href="http://scrolldepth.parsnip.io/" target="_blank">Learn more.</a>',
-              'default'          =>  'false'
-
-            )
-        );
-        add_settings_field(
-            'agatt-goog-analytics-scroll-scrolledelements',
-            __('Comma seperated list of elements to for scrolldepth to check', 'wpcv'),
-            array($this, 'option_generator'),
-            $this->slug,
-            $this->slug.'-section',
-            array(
-
-              'parent_element'   =>  'scrolldepth',
-              'element'          =>  'scrolledElements',
-              'type'             =>  'text',
-              'label_for'        =>  'Scrolling past these items will trigger an event.',
-              'default'          =>  ''
-
-
-            )
-        );
-        add_settings_field(
-            'agatt-goog-analytics-scroll-minheight',
-            __('Minimum Height', 'wpcv'),
-            array($this, 'option_generator'),
-            $this->slug,
-            $this->slug.'-section',
-            array(
-
-              'parent_element'   =>  'scrolldepth',
-              'element'          =>  'minHeight',
-              'type'             =>  'text',
-              'label_for'        =>  'Minimum height',
-              'default'          =>  0
-
-            )
-        );
-        add_settings_field(
-            'agatt-goog-analytics-scroll-percentage',
-            __('Percentage check', 'wpcv'),
-            array($this, 'option_generator'),
-            $this->slug,
-            $this->slug.'-section',
-            array(
-
-              'parent_element'   =>  'scrolldepth',
-              'element'          =>  'percentage',
-              'type'             =>  'checkbox',
-              'label_for'        =>  'Deactivate to only track scrolling to elements listed above.',
-              'default'          =>  'true'
-
-            )
-        );
-        add_settings_field(
-            'agatt-goog-analytics-scroll-usertiming',
-            __('User Timing', 'wpcv'),
-            array($this, 'option_generator'),
-            $this->slug,
-            $this->slug.'-section',
-            array(
-
-              'parent_element'   =>  'scrolldepth',
-              'element'          =>  'userTiming',
-              'type'             =>  'checkbox',
-              'label_for'        =>  'Track the amount of time between pageload and first scroll.',
-              'default'          =>  'true'
-
-            )
-        );
-        add_settings_field(
-            'agatt-goog-analytics-scroll-pixel_depth',
-            __('Pixel Depth', 'wpcv'),
-            array($this, 'option_generator'),
-            $this->slug,
-            $this->slug.'-section',
-            array(
-
-              'parent_element'   =>  'scrolldepth',
-              'element'          =>  'pixel_Depth',
-              'type'             =>  'checkbox',
-              'label_for'        =>  'Pixel Depth events',
-              'default'          =>  'true'
-
-            )
-        );
-
-        add_settings_field(
-            'agatt-goog-analytics-viewability-check',
-            __('Track elements\' viewability', 'wpcv'),
-            array($this, 'option_generator'),
-            $this->slug,
-            $this->slug.'-section',
-            array(
-
-              'parent_element'   =>  'viewability',
-              'element'          =>  'viewability_check',
-              'type'             =>  'checkbox',
-              'label_for'        =>  'Turn on viewability tracking',
-              'default'          =>  'false'
-
-            )
-        );
-
-
         # http://code.tutsplus.com/tutorials/create-a-settings-page-for-your-wordpress-theme--wp-20091
         add_settings_field(
-            'agatt-goog-analytics-viewability-events',
-            __('Viewable Area Tracking', 'wpcv'),
+            'wpcv-variable-list',
+            __('Variables', 'wpcv'),
             array($this, 'option_generator'),
             $this->slug,
             $this->slug.'-section',
             array(
-              'parent_element'  =>  'viewable_tracker',
-              'element'         =>  'track_these_viewable_elements',
+              'parent_element'  =>  'variables_list',
+              'element'         =>  'variables',
               'type'            =>  'repeating_text_group',
-              'label_for'       =>  '<a href="https://developers.google.com/analytics/devguides/collection/gajs/eventTrackerGuide" target="_blank">Read more about event tracking.</a>.',
+              'label_for'       =>  'Create variables here, Name for labeling, shortcode to call, followed by value.',
               'default'         =>  array(0 => array(
-                                        'selector' => 'footer',
-                                        'name'   => 'Footer'
+                                        'name'      => 'Variable',
+                                        'key'       => 'var1',
+                                        'value'     => '0'
                                     )),
               'fields'          =>  array(
-                                        'Selected DOM Element'   =>  'selector',
-                                        'Element Name'           =>  'name'
-                                    )
-            )
-        );
-
-        add_settings_field(
-            'agatt-goog-analytics-viewability-interval',
-            __('Report Interval', 'wpcv'),
-            array($this, 'option_generator'),
-            $this->slug,
-            $this->slug.'-section',
-            array(
-
-              'parent_element'   =>  'viewability',
-              'element'          =>  'reportInterval',
-              'type'             =>  'text',
-              'label_for'        =>  'Interval or seconds to track for viewability events (every X seconds, send an event)',
-              'default'          =>  15
-
-            )
-        );
-
-        add_settings_field(
-            'agatt-goog-analytics-viewability-percent',
-            __('Report Interval', 'wpcv'),
-            array($this, 'option_generator'),
-            $this->slug,
-            $this->slug.'-section',
-            array(
-
-              'parent_element'   =>  'viewability',
-              'element'          =>  'percentOnScreen',
-              'type'             =>  'text',
-              'label_for'        =>  'Percent of container that must be on screen to be counted as viewable (example: 50%)',
-              'default'          =>  '50%'
-
-            )
-        );
-
-        add_settings_field(
-            'agatt-goog-analytics-viewability-google-active',
-            __('Report Interval', 'wpcv'),
-            array($this, 'option_generator'),
-            $this->slug,
-            $this->slug.'-section',
-            array(
-
-              'parent_element'   =>  'viewability',
-              'element'          =>  'googleAnalytics',
-              'type'             =>  'checkbox',
-              'label_for'        =>  'Send viewablity events to Google',
-              'default'          =>  'true'
-
-            )
-        );
-
-        # http://code.tutsplus.com/tutorials/create-a-settings-page-for-your-wordpress-theme--wp-20091
-        add_settings_field(
-            'agatt-goog-analytics-events',
-            __('Click Event Tracking', 'wpcv'),
-            array($this, 'option_generator'),
-            $this->slug,
-            $this->slug.'-section',
-            array(
-              'parent_element'  =>  'click_tracker',
-              'element'         =>  'track_these_elements',
-              'type'            =>  'repeating_text_group',
-              'label_for'       =>  '<a href="https://developers.google.com/analytics/devguides/collection/gajs/eventTrackerGuide" target="_blank">Read more about event tracking.</a>.',
-              'default'         =>  array(0 => array(
-                                        'domElement' => 'body',
-                                        'category'   => 'primary_elements',
-                                        'action'     => 'click',
-                                        'label'      => 'Body Click'
-                                    )),
-              'fields'          =>  array(
-                                        'DOM Element'       =>  'domElement',
-                                        'Object Group Name' =>  'category',
-                                        'Action'            =>  'action',
-                                        'Event Label'       =>  'label'
+                                        'Name'              =>  'name',
+                                        'Shortcode Key'     =>  'key',
+                                        'Shortcode Value'   =>  'value'
                                     )
             )
         );
@@ -266,7 +74,7 @@ class WPCV_Admin extends WP_Content_Variables {
       # Methodology: http://kovshenin.com/2012/the-wordpress-settings-api/
       ?>
       <div class="wrap">
-          <h2>Advanced Google Analytics Tracking</h2>
+          <h2><?php echo $this->option_title; ?></h2>
           <form action="options.php" method="POST">
               <?php settings_fields( $this->slug.'-group' ); ?>
               <?php $settings = get_option( $this->option_name, array() ); ?>
@@ -278,7 +86,7 @@ class WPCV_Admin extends WP_Content_Variables {
     }
 
     public function section_top(){
-      echo 'Set up options for advanced Google Analytics tracking.';
+      echo 'Set up shortcodes for containing variables.';
     }
 
     public function setting($args, $default = array()){
@@ -334,7 +142,6 @@ class WPCV_Admin extends WP_Content_Variables {
             $c = 0;
             $group = self::setting($args, $default);
             ?>
-            <h3 class="<?php echo $this->option_name; ?>-event">Events to track:</h3>
             <ul class="repeater-container" for="repeat-element-<?php echo $parent_element; ?>-<?php echo $element; ?>" id="repeater-<?php echo $parent_element; echo '-'; echo $element; ?>">
                 <?php foreach ($group as $event){
                     if ($c > 0) { $id_c = '-'.$c; } else { $id_c = ''; }
@@ -372,7 +179,7 @@ class WPCV_Admin extends WP_Content_Variables {
         global $pagenow;
 
         wp_register_script($this->slug . '-admin', $this->url . 'assets/js/admin.js' , array( 'jquery' ));
-        if ('tools_page_'.$this->slug.'-menu' == $hook){
+        if ('tools_page_'.$this->slug == $hook){
             wp_enqueue_script($this->slug.'-admin');
         }
 
