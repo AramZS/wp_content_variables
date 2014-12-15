@@ -20,10 +20,11 @@ class WP_Content_Variables {
   		if ( ! isset( static::$instance ) ) {
   			$instance = new $class;
   			// Standard setup methods
-  			foreach( array( 'setup_globals', 'includes', 'setup_actions', 'setup_classes' ) as $method ) {
+  			foreach( array( 'setup_globals', 'includes', 'setup_actions' ) as $method ) {
   				if ( method_exists( $instance, $method ) )
   					$instance->$method();
   			}
+
   			self::$instance = $instance;
   		}
   		return self::$instance;
@@ -62,6 +63,11 @@ class WP_Content_Variables {
 		$this->ver = apply_filters( 'WP_Content_Variables_version',  '0.0.1' );
 		$this->slug = apply_filters( 'WP_Content_Variables_version',  '0.0.1' );
 
+    if (!isset($res)){
+      $extend = new stdClass();
+    }
+    $this->extend = $extend;
+
 	}
 
 	/**
@@ -77,10 +83,6 @@ class WP_Content_Variables {
 
   }
 
-  public function setup_classes(){
-    $this->set_up_admin();
-  }
-
 	/**
 	 * Enqueue Scripts
 	 *
@@ -89,17 +91,6 @@ class WP_Content_Variables {
 	public function scripts() {
 
 
-	}
-
-  	/**
-	 * Sets up the admin pannel.
-	 *
-	 * @since 3.0
-	 */
-	function set_up_admin() {
-		if ( empty( $this->admin ) ) {
-			$this->admin = new WPCV_Admin;
-		}
 	}
 
 

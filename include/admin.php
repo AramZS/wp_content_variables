@@ -1,13 +1,13 @@
 <?php
 
-class WPCV_Admin {
+class WPCV_Admin extends WP_Content_Variables {
 
     var $option_name;
 
     function __construct(){
-
-        $this->slug = WP_Content_Variables()->slug;
-		$this->url = WP_Content_Variables::plugin_url;
+      $mothership = $this;
+        $this->slug = $mothership->slug;
+		$this->url = $mothership->plugin_url;
 		$this->option_name = $this->slug.'_settings';
 		$this->option_title = __('Content Variables', 'wpcv');
         add_action( 'admin_menu', array( $this, 'register_custom_menu_pages' ) );
@@ -186,7 +186,7 @@ class WPCV_Admin {
             'agatt-goog-analytics-viewability-interval',
             __('Report Interval', 'wpcv'),
             array($this, 'option_generator'),
-            AGATT_MENU_SLUG,
+            $this->slug,
             $this->slug.'-section',
             array(
 
@@ -203,7 +203,7 @@ class WPCV_Admin {
             'agatt-goog-analytics-viewability-percent',
             __('Report Interval', 'wpcv'),
             array($this, 'option_generator'),
-            AGATT_MENU_SLUG,
+            $this->slug,
             $this->slug.'-section',
             array(
 
@@ -220,7 +220,7 @@ class WPCV_Admin {
             'agatt-goog-analytics-viewability-google-active',
             __('Report Interval', 'wpcv'),
             array($this, 'option_generator'),
-            AGATT_MENU_SLUG,
+            $this->slug,
             $this->slug.'-section',
             array(
 
@@ -238,7 +238,7 @@ class WPCV_Admin {
             'agatt-goog-analytics-events',
             __('Click Event Tracking', 'wpcv'),
             array($this, 'option_generator'),
-            AGATT_MENU_SLUG,
+            $this->slug,
             $this->slug.'-section',
             array(
               'parent_element'  =>  'click_tracker',
@@ -386,3 +386,5 @@ class WPCV_Admin {
     }
 
 }
+
+WP_Content_Variables()->extend->admin = new WPCV_Admin();
